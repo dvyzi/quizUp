@@ -1,0 +1,34 @@
+.spring-slider,
+.swiper-slide {
+    background-color: transparent !important;
+}
+
+main {
+    background-color: var(--violet);
+    padding: 0 250px;
+}
+
+.manageGame {
+    padding: 50px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+}
+
+.manageGame__container__h2 {
+    font-size: 40px;
+    margin-bottom: 10px;
+}
+
+
+@media screen and (max-width: 1400px) {
+    main {
+        padding: 0 100px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    main {
+        padding: 0 30px;
+    }
+}
