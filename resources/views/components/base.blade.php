@@ -18,8 +18,8 @@
     <script src="https://kit.fontawesome.com/9de8273207.js" crossorigin="anonymous" defer></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="icon" href="{{ asset('assets/img/logo/quizup.png') }}" />
-    <link rel="modulepreload" href="{{asset("assets/js/swiper/vendor.js")}}">
-    <link rel="stylesheet" href="{{asset("assets/css/swiper/carroussel.css")}}">
+    <link rel="modulepreload" href="{{ asset('assets/js/swiper/vendor.js') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/swiper/carroussel.css') }}">
 </head>
 
 <body>
@@ -36,9 +36,17 @@
                 <li><a href="">Apprentissage</a></li>
             </ul>
 
-            <div class="header__nav__connect">
-                <a href="/auth/login"><i class="fa-regular fa-circle-user"></i></a>
-            </div>
+            @if (!Auth::check())
+                <div class="header__nav__connect">
+                    <a class="header__nav__connect__icon" href="/login"><i class="fa-regular fa-circle-user"></i></a>
+                </div>
+            @endif
+
+            @if (Auth::check())
+                <div class="header__nav__connect">
+                    <a href="/dashboard" class="header__nav__connect__myaccount">Mon compte</a>
+                </div>
+            @endif
 
             <button class="header__nav__burger">
                 <span></span>
@@ -53,9 +61,18 @@
                 <a href="">Divertissement</a>
                 <a href="">Apprentissage</a>
             </div>
-            <div class="header__menu__gateway__connexion">
-                <a href="/auth/login">Se connecter</a>
-            </div>
+            @if (!Auth::check())
+                <div class="header__menu__gateway__connexion">
+                    <a href="/login">Se connecter</a>
+                </div>
+            @endif
+
+            @if (Auth::check())
+                <div class="header__menu__gateway__connexion">
+                    <a href="/dashboard">Mon compte</a>
+                </div>
+            @endif
+
         </menu>
         <script src="{{ asset('assets/js/base/header.js') }}"></script>
     </header>

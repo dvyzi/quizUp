@@ -1,0 +1,44 @@
+main {
+    background-color: var(--violet);
+    padding: 50px 250px 0 250px;
+}
+
+.main__h2 {
+    font-size: 40px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.manageHistoryGame__container__h2 {
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.update{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 25px;
+    padding: 50px 0;
+}
+
+.update h2 a{
+    padding: 13px;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    color: #fff;
+    cursor: pointer;
+}
+.updateProfile{
+    background-color: var(--yellow);
+}
+
+.deleteProfile{
+    background-color: var(--yellow);
+    transition: all .2s linear;
+}
+
+.deleteProfile:hover{ 
+    background-color: red;
+}

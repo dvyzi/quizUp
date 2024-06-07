@@ -2,6 +2,7 @@
     <div class="playgame">
         <img class="playgame__img" src="{{asset("assets/img/banner/quiz.png")}}" alt="">
         <form action="" class="playgame__form">
+            @csrf
             <h2 class="playgame__form__h2">Rejoindre une partie</h2>
             <input req type="text" placeholder="Entrez votre code ici" class="playgame__form__input" maxlength="6">
             <button type="submit" class="playgame__form__submit">Jouer</button>
