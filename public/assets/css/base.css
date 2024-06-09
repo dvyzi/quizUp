@@ -12,11 +12,16 @@
     --yellow: #F0A93B;
 }
 
+body {
+    background-color: var(--violet);
+}
+
 .error {
     background-color: #d00000;
     text-align: center;
     border-radius: 5px;
     padding: 10px;
+    color: #fff;
 }
 
 header {

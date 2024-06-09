@@ -18,8 +18,10 @@
     <script src="https://kit.fontawesome.com/9de8273207.js" crossorigin="anonymous" defer></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="icon" href="{{ asset('assets/img/logo/quizup.png') }}" />
-    <link rel="modulepreload" href="{{ asset('assets/js/swiper/vendor.js') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/swiper/carroussel.css') }}">
+    <!-- <link rel="modulepreload" href="{{ asset('assets/js/swiper/vendor.js') }}">
+    <link rel="stylesheet" href="{{ asset('assets/css/swiper/carroussel.css') }}"> -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous"></script>
 </head>
 
 <body>

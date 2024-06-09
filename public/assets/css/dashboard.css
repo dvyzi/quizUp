@@ -3,42 +3,85 @@ main {
     padding: 50px 250px 0 250px;
 }
 
-.main__h2 {
+.main__h1 {
     font-size: 40px;
-    text-align: center;
     margin-bottom: 50px;
+    color: #fff;
 }
 
-.manageHistoryGame__container__h2 {
+.main__manageProfil {
+    margin: 40px 0;
+    background-color: var(--violetdark);
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.main__manageProfil__right a {
+    background-color: var(--yellow);
+    border-radius: 5px;
+    color: #fff;
+    font-size: 20px;
+    padding: 10px;
+}
+
+.main__manageProfil__left h2 {
+    font-size: 30px;
+    color: #fff;
+}
+
+.main__manageProfil__left p {
+    color: #fff;
+}
+
+.main__manageHistoryGame {
+    padding: 10px 0 20px 0;
+}
+
+.main__manageHistoryGame__h2 {
     font-size: 30px;
     margin-bottom: 10px;
-}
-
-.update{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 25px;
-    padding: 50px 0;
-}
-
-.update h2 a{
-    padding: 13px;
-    border: none;
-    border-radius: 5px;
-    font-size: 18px;
     color: #fff;
-    cursor: pointer;
-}
-.updateProfile{
-    background-color: var(--yellow);
 }
 
-.deleteProfile{
-    background-color: var(--yellow);
-    transition: all .2s linear;
+.main__manageHistoryGame__manager {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, auto));
+    gap: 20px;
 }
 
-.deleteProfile:hover{ 
-    background-color: red;
+.main__manageHistoryGame__manager__container img {
+    width: 100%;
+    height: auto;
+}
+
+@media screen and (max-width: 1400px) {
+    main {
+        padding: 50px 100px;
+    }
+}
+
+@media screen and (max-width: 1000px) {
+    .main__h1 {
+        text-align: center;
+    }
+
+    .main__manageProfil {
+        align-items: start;
+        flex-direction: column;
+        gap: 25px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    main {
+        padding: 50px 30px;
+    }
+
+    /* .main__manageProfil__left p {
+        display: none;
+    } */
 }

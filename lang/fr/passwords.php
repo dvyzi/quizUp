@@ -33,9 +33,9 @@ return [
     ],
     'boolean' => 'The :attribute field must be true or false.',
     'can' => 'The :attribute field contains an unauthorized value.',
-    'confirmed' => 'Les deux champs :attribute ne sont pas identiques.',
+    'confirmed' => 'The :attribute field confirmation does not match.',
     'contains' => 'The :attribute field is missing a required value.',
-    'current_password' => 'Mot de passe actuel invalide.',
+    'current_password' => 'Le mot de passe actuel est invalide.',
     'date' => 'The :attribute field must be a valid date.',
     'date_equals' => 'The :attribute field must be a date equal to :date.',
     'date_format' => 'The :attribute field must match the format :format.',
@@ -118,7 +118,7 @@ return [
     'not_regex' => 'The :attribute field format is invalid.',
     'numeric' => 'The :attribute field must be a number.',
     'password' => [
-        'letters' => 'The :attribute field must contain at least one letter.',
+        'letters' => 'Salut :attribute field must contain at least one letter.',
         'mixed' => 'The :attribute field must contain at least one uppercase and one lowercase letter.',
         'numbers' => 'The :attribute field must contain at least one number.',
         'symbols' => 'The :attribute field must contain at least one symbol.',
@@ -134,7 +134,7 @@ return [
     'prohibited_unless' => 'The :attribute field is prohibited unless :other is in :values.',
     'prohibits' => 'The :attribute field prohibits :other from being present.',
     'regex' => 'The :attribute field format is invalid.',
-    'required' => 'Le champ :attribute est requis.',
+    'required' => 'The :attribute field is required.',
     'required_array_keys' => 'The :attribute field must contain entries for: :values.',
     'required_if' => 'The :attribute field is required when :other is :value.',
     'required_if_accepted' => 'The :attribute field is required when :other is accepted.',
@@ -189,11 +189,6 @@ return [
     |
     */
 
-    'attributes' => [
-        "password" => "mot de passe",
-        "name" => "prénom",
-        "surname" => "nom de famille",
-        "nikcname" => "pseudo"
-    ],
+    'attributes' => [],
 
 ];
