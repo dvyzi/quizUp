@@ -3,9 +3,6 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\ApiController;
-
-Route::get('/send-post-request', [ApiController::class, 'sendPostRequest']);
 
 Route::get('/', function () {
     return view('homepage');
@@ -15,8 +12,12 @@ Route::get('/quiz/news', function () {
     return view('quiz/news');
 });
 
-Route::get('/test', function () {
-    return view('test');
+Route::get('/quiz/home', function () {
+    return view('quiz/home');
+});
+
+Route::get('/quiz/game', function () {
+    return view('quiz/game');
 });
 
 

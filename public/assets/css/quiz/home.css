@@ -1,0 +1,24 @@
+main {
+    padding: 50px 250px;
+}
+
+.main__manageProfil {
+    margin: 40px 0;
+    background-color: var(--violetdark);
+    padding: 20px;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.main__manageProfil__left{
+    text-align: center;
+    color: #fff;
+}
+
+.main__manageProfil__left h2 {
+    font-size: 30px;
+}
+

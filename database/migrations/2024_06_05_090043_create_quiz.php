@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('quiz', function (Blueprint $table) {
             $table->id();
+            $table->integer('difficulty');
+            $table->integer('type');
             $table->integer('historyId');
             $table->integer('use')->default(0);
             $table->timestamps();

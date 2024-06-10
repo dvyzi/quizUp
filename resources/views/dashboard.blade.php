@@ -3,7 +3,7 @@
     <div class="main__manageProfil">
         <section class="main__manageProfil__left">
             <h2>Gestion de vos données personnelles</h2>
-            <p>Cliquer sur le bouton pour accéder à vos informations personnelles.</p>
+            <p>Cliquez sur le bouton pour accéder à vos informations personnelles.</p>
         </section>
         <div class="main__manageProfil__right">
             <a href="/profile">Gérer mon profil</a>
