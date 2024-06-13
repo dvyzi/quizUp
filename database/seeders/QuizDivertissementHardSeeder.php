@@ -6,14 +6,17 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\ApiController;
+use App\Http\Controllers\QuestionController;
 
 class QuizDivertissementHardSeeder extends Seeder
 {
     private $api;
+    private $questionController;
 
     public function __construct()
     {
         $this->api = new ApiController();
+        $this->questionController = new QuestionController();
     }
     /**
      * Run the database seeds.
@@ -25,7 +28,9 @@ class QuizDivertissementHardSeeder extends Seeder
             $newQuizId = DB::table("quiz")->insertGetId(["difficulty" => 2, "type" => 0]);
 
             for ($question = 0; $question < 5; $question++) {
-                $getImage = $this->api->getImage($newQuiz[$question]["question"])->getData(true)["data"];
+                $getImage = $this->api->getImage($this->questionController->__transform($newQuiz[$question]["question"]))->getData(true);
+                if(isset($getImage["data"])) $getImage = $getImage["data"];
+                else $getImage = "https://miro.medium.com/v2/resize:fit:1400/1*MXyMqcEJ6Se0SCWcYCKZTQ.jpeg";
                 $newQuestionId = DB::table("question")->insertGetId([
                     "quizId" => $newQuizId,
                     "label" => $newQuiz[$question]["question"],

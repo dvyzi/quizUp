@@ -16,12 +16,11 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Racing+Sans+One&display=swap"
         rel="stylesheet">
     <script src="https://kit.fontawesome.com/9de8273207.js" crossorigin="anonymous" defer></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     <link rel="icon" href="{{ asset('assets/img/logo/quizup.png') }}" />
-    <!-- <link rel="modulepreload" href="{{ asset('assets/js/swiper/vendor.js') }}">
-    <link rel="stylesheet" href="{{ asset('assets/css/swiper/carroussel.css') }}"> -->
     <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
         crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
 </head>
 
 <body>
@@ -33,9 +32,9 @@
             </a>
 
             <ul class="header__nav__middle">
-                <li><a href="/quiz/news">Nouveauté</a></li>
-                <li><a href="">Divertissement</a></li>
-                <li><a href="">Apprentissage</a></li>
+                <li><a href="/quiz/trend">Tendances</a></li>
+                <li><a href="/quiz/divertissement">Divertissement</a></li>
+                <li><a href="/quiz/apprentissage">Apprentissage</a></li>
             </ul>
 
             @if (!Auth::check())
@@ -59,9 +58,9 @@
 
         <menu>
             <div class="header__menu__redirect">
-                <a href="/quiz/news">Nouveauté</a>
-                <a href="">Divertissement</a>
-                <a href="">Apprentissage</a>
+                <a href="/quiz/trend">Tendances</a>
+                <a href="/quiz/divertissement">Divertissement</a>
+                <a href="/quiz/apprentissage">Apprentissage</a>
             </div>
             @if (!Auth::check())
                 <div class="header__menu__gateway__connexion">

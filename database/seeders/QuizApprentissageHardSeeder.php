@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\QuestionController;
 
-class QuizDivertissementEasySeeder extends Seeder
+class QuizApprentissageHardSeeder extends Seeder
 {
     private $api;
     private $questionController;
@@ -24,8 +24,8 @@ class QuizDivertissementEasySeeder extends Seeder
     public function run(): void
     {
         for ($quiz = 0; $quiz < 8; $quiz++) {
-            $newQuiz = $this->api->getQuiz("sport")->getData(true)["data"];
-            $newQuizId = DB::table("quiz")->insertGetId(["difficulty" => 0, "type" => 0]);
+            $newQuiz = $this->api->getQuiz("art_litterature")->getData(true)["data"];
+            $newQuizId = DB::table("quiz")->insertGetId(["difficulty" => 2, "type" => 1]);
 
             for ($question = 0; $question < 5; $question++) {
                 $getImage = $this->api->getImage($this->questionController->__transform($newQuiz[$question]["question"]))->getData(true);

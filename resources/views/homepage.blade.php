@@ -11,7 +11,7 @@
 
     <script src="{{asset("assets/js/script.js")}}"></script>
     <div class="demonstration">
-        <iframe width="660" height="415" src="https://www.youtube.com/embed/XCo2syvieoU?si=G-uWm_Yh-wtIbRLx" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        <iframe width="660" height="415" src="https://www.youtube.com/embed/UcHox9jCYW4?si=PGocsqYFs-DnwfhP" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         <p class="demonstration__p">En savoir plus sur nous !</p>
     </div>
 </x-base>
