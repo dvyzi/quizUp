@@ -3,7 +3,7 @@
         <h2>En attente de joueurs <span>.</span></h2>
     </section>
     <div class="main__nickname">
-        Pseudo: Anonyme 1
+        Pseudo: {{ $nickname }}
     </div>
-    <script src="{{asset("assets/js/quiz/home.js")}}"></script>
+    <script src="{{ asset('assets/js/quiz/home.js') }}"></script>
 </x-base>

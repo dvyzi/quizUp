@@ -24,6 +24,31 @@ class QuizController extends Controller
             ->get();
     }
 
+    public function getTrend()
+    {
+        $userId = null;
+        if (Auth::check()) $userId = Auth::user()->id;
+        return Quiz::join("question", "quiz.id", "=", "question.quizId")
+            ->leftJoin("favorite", function ($join) use ($userId) {
+                $join->on("quiz.id", "=", "favorite.quizId")
+                    ->where("favorite.userId", "=", $userId);
+            })
+            ->select("quiz.id", "question.image", "favorite.id as favorite")
+            ->where("order", 1)
+            ->get()
+            ->sortBy("use")
+            ->slice(0, 8);
+    }
+
+    public function trend()
+    {
+        return view("quiz.template", [
+            "easy" => $this->getTrend(),
+            "medium" => $this->getTrend(),
+            "hard" => $this->getTrend(),
+        ]);
+    }
+
     public function divertissement()
     {
         return view("quiz.template", [

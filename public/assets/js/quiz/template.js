@@ -75,3 +75,28 @@ document.querySelectorAll(".main__difficult__manager__container .favorite").forE
 
     })
 })
+
+document.querySelectorAll(".play").forEach((container) => {
+    container.addEventListener("click", () => {
+        console.log(container.id);
+        $.ajax({
+            type: "POST",
+            url: "/quiz/game",
+            data: {
+                _token: document.querySelector(`.form${container.id} input[name=_token]`).value,
+                quizId: container.id
+            },
+            success: function (response) {
+                location.replace(response.url)
+            },
+            error: function (err) {
+                console.log(err);
+                if (err.responseJSON.status === "user-not-connected") location.replace(err.responseJSON.url)
+                else notyf.open({
+                    type: 'error',
+                    message: '<p style="text-align:center">Une erreur vient se produire veuillez ressayer ultérieurement</p>'
+                });
+            }
+        });
+    })
+})

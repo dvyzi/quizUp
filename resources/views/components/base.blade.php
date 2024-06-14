@@ -2,6 +2,14 @@
     'css' => '',
 ])
 
+@php
+    use Illuminate\Support\Str;
+@endphp
+
+@php
+    $currentUrl = request()->path();
+@endphp
+
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -31,23 +39,35 @@
                 <p>quizUp</p>
             </a>
 
-            <ul class="header__nav__middle">
-                <li><a href="/quiz/trend">Tendances</a></li>
-                <li><a href="/quiz/divertissement">Divertissement</a></li>
-                <li><a href="/quiz/apprentissage">Apprentissage</a></li>
-            </ul>
+            @if (!Str::startsWith($currentUrl, 'quiz/game'))
+                <ul class="header__nav__middle">
+                    <li><a href="/quiz/trend">Tendances</a></li>
+                    <li><a href="/quiz/divertissement">Divertissement</a></li>
+                    <li><a href="/quiz/apprentissage">Apprentissage</a></li>
+                </ul>
+            @endif
 
-            @if (!Auth::check())
+
+            @if (!Str::startsWith($currentUrl, 'quiz/game'))
+                @if (!Auth::check())
+                    <div class="header__nav__connect">
+                        <a class="header__nav__connect__icon" href="/login"><i
+                                class="fa-regular fa-circle-user"></i></a>
+                    </div>
+                @endif
+
+                @if (Auth::check())
+                    <div class="header__nav__connect">
+                        <a href="/dashboard" class="header__nav__connect__myaccount">Mon compte</a>
+                    </div>
+                @endif
+            @else
                 <div class="header__nav__connect">
-                    <a class="header__nav__connect__icon" href="/login"><i class="fa-regular fa-circle-user"></i></a>
+                    <a class="header__nav__connect__icon" href="/login"><i
+                            class="fa-solid fa-arrow-right-from-bracket"></i></a>
                 </div>
             @endif
 
-            @if (Auth::check())
-                <div class="header__nav__connect">
-                    <a href="/dashboard" class="header__nav__connect__myaccount">Mon compte</a>
-                </div>
-            @endif
 
             <button class="header__nav__burger">
                 <span></span>
@@ -57,67 +77,76 @@
         </nav>
 
         <menu>
-            <div class="header__menu__redirect">
-                <a href="/quiz/trend">Tendances</a>
-                <a href="/quiz/divertissement">Divertissement</a>
-                <a href="/quiz/apprentissage">Apprentissage</a>
-            </div>
-            @if (!Auth::check())
+            @if (!Str::startsWith($currentUrl, 'quiz/game'))
+                <div class="header__menu__redirect">
+                    <a href="/quiz/trend">Tendances</a>
+                    <a href="/quiz/divertissement">Divertissement</a>
+                    <a href="/quiz/apprentissage">Apprentissage</a>
+                </div>
+                @if (!Auth::check())
+                    <div class="header__menu__gateway__connexion">
+                        <a href="/login">Se connecter</a>
+                    </div>
+                @endif
+
+                @if (Auth::check())
+                    <div class="header__menu__gateway__connexion">
+                        <a href="/dashboard">Mon compte</a>
+                    </div>
+                @endif
+            @else
                 <div class="header__menu__gateway__connexion">
-                    <a href="/login">Se connecter</a>
+                    <a href="/dashboard">Quitter la partie</a>
                 </div>
             @endif
-
-            @if (Auth::check())
-                <div class="header__menu__gateway__connexion">
-                    <a href="/dashboard">Mon compte</a>
-                </div>
-            @endif
-
         </menu>
         <script src="{{ asset('assets/js/base/header.js') }}"></script>
     </header>
     <main>
         {{ $slot }}
     </main>
-    <footer>
-        <section class="footer_top">
-            <section class="footer_aboutMe">
-                <p class="footer_aboutMe_title">À propos de nous</p>
-                <p class="footer_aboutMe_p">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus dolor rem
-                    velit, sed praesentium saepe dolores recusandae dolore reprehenderit! Quia molestiae rerum, officiis
-                    vel ex neque eveniet nulla recusandae iusto, nesciunt quo commodi! Qui ex neque at labore quae
-                    eaque.</p>
-            </section>
-            <section class="footer_category">
-                <p class="footer_category_title">Menu</p>
-                <div class="footer_category_manager">
-                    <a href="">Nouveauté</a>
-                    <a href="">Divertissement</a>
-                    <a href="">Avertissement</a>
-                </div>
-            </section>
-            <section class="footer_policies">
-                <p class="footer_policies_title">Nos politiques</p>
-                <div class="footer_category">
+    @if (!Str::startsWith($currentUrl, 'quiz/game'))
+        <footer>
+            <section class="footer_top">
+                <section class="footer_aboutMe">
+                    <p class="footer_aboutMe_title">À propos de nous</p>
+                    <p class="footer_aboutMe_p">Lorem ipsum, dolor sit amet consectetur adipisicing elit. Possimus dolor
+                        rem
+                        velit, sed praesentium saepe dolores recusandae dolore reprehenderit! Quia molestiae rerum,
+                        officiis
+                        vel ex neque eveniet nulla recusandae iusto, nesciunt quo commodi! Qui ex neque at labore quae
+                        eaque.</p>
+                </section>
+                <section class="footer_category">
+                    <p class="footer_category_title">Menu</p>
                     <div class="footer_category_manager">
-                        <a href="/policies/privacy-policy">Politique de confidentialité</a>
-                        <a href="/policies/terms-of-service">Conditions d'utilisation</a>
-                        <a href="/policies/shipping-policy">Besoin d'aide ?</a>
+                        <a href="">Nouveauté</a>
+                        <a href="">Divertissement</a>
+                        <a href="">Avertissement</a>
                     </div>
+                </section>
+                <section class="footer_policies">
+                    <p class="footer_policies_title">Nos politiques</p>
+                    <div class="footer_category">
+                        <div class="footer_category_manager">
+                            <a href="/policies/privacy-policy">Politique de confidentialité</a>
+                            <a href="/policies/terms-of-service">Conditions d'utilisation</a>
+                            <a href="/policies/shipping-policy">Besoin d'aide ?</a>
+                        </div>
+                    </div>
+                </section>
+            </section>
+            <div class="footer_separation"></div>
+            <section class="footer_bottom">
+                <p class="footer_bottom_copyright">Copyright © 2024 All Rights Reserved by quizUp.</p>
+                <div class="footer_bottom_socialMedia">
+                    <a href=""><i class="fa-brands fa-instagram"></i></a>
+                    <a href=""><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href=""><i class="fa-brands fa-tiktok"></i></a>
                 </div>
             </section>
-        </section>
-        <div class="footer_separation"></div>
-        <section class="footer_bottom">
-            <p class="footer_bottom_copyright">Copyright © 2024 All Rights Reserved by quizUp.</p>
-            <div class="footer_bottom_socialMedia">
-                <a href=""><i class="fa-brands fa-instagram"></i></a>
-                <a href=""><i class="fa-brands fa-x-twitter"></i></a>
-                <a href=""><i class="fa-brands fa-tiktok"></i></a>
-            </div>
-        </section>
-    </footer>
+        </footer>
+    @endif
 </body>
 
 </html>

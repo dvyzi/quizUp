@@ -5,31 +5,22 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\GameController;
 use App\Models\Favorite;
 
 Route::get('/', function () {
     return view('homepage');
 });
 
-Route::get('/quiz/news', function () {
-    return view('quiz/template');
-});
-
 Route::get('/quiz/divertissement', [QuizController::class, "divertissement"]);
-
 Route::get('/quiz/apprentissage', [QuizController::class, "apprentissage"]);
+Route::get('/quiz/trend', [QuizController::class, "trend"]);
 
-Route::get('/quiz/home', function () {
-    return view('quiz/home');
-});
 
-Route::get('/quiz/host', function () {
-    return view('quiz/host');
-});
-
-Route::get('/quiz/game', function () {
-    return view('quiz/game');
-});
+Route::post('/quiz/game/join', [GameController::class, "join"])->name("join.game");
+Route::post('/quiz/game', [GameController::class, "store"]);
+Route::get('/quiz/game/{quizId}/{code}', [GameController::class, "game"]);
+Route::post('/quiz/game/users', [GameController::class, "getAllUsers"]);
 
 
 Route::post('/favorite/add', [FavoriteController::class, "store"]);

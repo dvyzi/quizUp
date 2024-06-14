@@ -1,8 +1,8 @@
-*{
+* {
     color: white;
 }
 
-main{
+main {
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -25,7 +25,7 @@ main{
     object-fit: cover;
 }
 
-.responses__Contain{
+.responses__Contain {
     display: flex;
     flex-direction: column;
     width: 100%;
@@ -33,7 +33,7 @@ main{
     padding: 30px 0;
 }
 
-.responses__Contain button{
+.responses__Contain button {
     cursor: pointer;
     border: none;
     height: 50px;
@@ -41,36 +41,65 @@ main{
     border-radius: 5px;
 }
 
-.responses__Contain button:disabled{
+.responses__Contain button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-.response1{
+.response1 {
     background-color: #E21B3C;
 }
 
-.response2{
+.response2 {
     background-color: #1368CE;
 }
 
-.response3{
+.response3 {
     background-color: #D89E00;
 }
 
-.response4{
+.response4 {
     background-color: #26890C;
+}
+
+.main__nextQuestion {
+    position: fixed;
+    background-color: rgba(0, 0, 0, 0.7);
+    width: 100%;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: -9999;
+    opacity: 0;
+    transition: opacity .3s linear;
+}
+
+.main__nextQuestion.active {
+    opacity: 1;
+    z-index: 9999;
+}
+
+.main__nextQuestion h2 {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--violet);
+    padding: 100px;
+    border-radius: 10px;
+    font-size: 60px;
 }
 
 @media screen and (min-width: 700px) {
     main {
         padding: 10px 100px;
     }
-    .responses__Contain{
+
+    .responses__Contain {
         display: grid;
         grid-template-columns: 1fr 1fr;
     }
-    
+
 }
 
 @media screen and (min-width: 1000px) {
@@ -92,5 +121,5 @@ main{
     .h1Img__Contain {
         width: 60%;
     }
-    
+
 }
