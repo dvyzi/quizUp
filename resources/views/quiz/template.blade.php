@@ -25,7 +25,7 @@
             @foreach ($medium as $container)
                 <div class="main__difficult__manager__container">
                     <div class="main__difficult__manager__container__button">
-                        <a href="/quiz/game/{{ $container->id }}" class="play">Jouer</a>
+                        <button id="{{ $container->id }}" class="play">Jouer</button>
                         <form onsubmit="return false" class="form{{ $container->id }}">
                             @csrf
                             <button id="{{ $container->id }}{{ $container->favorite ? '_remove' : '_add' }}"
@@ -45,7 +45,7 @@
             @foreach ($hard as $container)
                 <div class="main__difficult__manager__container">
                     <div class="main__difficult__manager__container__button">
-                        <a href="/quiz/game/{{ $container->id }}" class="play">Jouer</a>
+                        <button id="{{ $container->id }}" class="play">Jouer</button>
                         <form onsubmit="return false" class="form{{ $container->id }}">
                             @csrf
                             <button id="{{ $container->id }}{{ $container->favorite ? '_remove' : '_add' }}"

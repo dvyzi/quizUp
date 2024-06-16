@@ -78,7 +78,6 @@ document.querySelectorAll(".main__difficult__manager__container .favorite").forE
 
 document.querySelectorAll(".play").forEach((container) => {
     container.addEventListener("click", () => {
-        console.log(container.id);
         $.ajax({
             type: "POST",
             url: "/quiz/game/create",

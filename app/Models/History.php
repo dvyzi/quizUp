@@ -9,7 +9,14 @@ class History extends Model
 {
     use HasFactory;
 
+    protected $table = "history";
     protected $fillable = [
-        'userId',
+        "userId",
+        "quizId"
     ];
+
+    public function quiz()
+    {
+        return $this->hasMany(Quiz::class);
+    }
 }

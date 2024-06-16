@@ -29,7 +29,7 @@ document.querySelectorAll(".main__manageHistoryGame__manager__container .favorit
                     type: 'success',
                     message: 'Retiré des favoris'
                 });
-                if(Number(response.length) === 0) location.reload()
+                if (Number(response.length) === 0) location.reload()
             },
             error: function (err) {
                 console.log(err);
@@ -45,3 +45,30 @@ document.querySelectorAll(".main__manageHistoryGame__manager__container .favorit
         });
     })
 })
+
+$(document).ready(function () {
+    document.querySelectorAll(".play").forEach((container) => {
+        container.addEventListener("click", () => {
+            console.log("ici");
+            $.ajax({
+                type: "POST",
+                url: "/quiz/game/create",
+                data: {
+                    _token: document.querySelector(`.csrfToken`).value,
+                    quizId: container.id
+                },
+                success: function (response) {
+                    location.replace(response.url)
+                },
+                error: function (err) {
+                    console.log(err);
+                    if (err.responseJSON.status === "user-not-connected") location.replace(err.responseJSON.url)
+                    else notyf.open({
+                        type: 'error',
+                        message: '<p style="text-align:center">Une erreur vient se produire veuillez ressayer ultérieurement</p>'
+                    });
+                }
+            });
+        })
+    })
+});

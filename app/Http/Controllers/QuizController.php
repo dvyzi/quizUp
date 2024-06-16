@@ -24,7 +24,7 @@ class QuizController extends Controller
             ->get();
     }
 
-    public function getTrend()
+    public function getTrend($difficulty)
     {
         $userId = null;
         if (Auth::check()) $userId = Auth::user()->id;
@@ -33,6 +33,7 @@ class QuizController extends Controller
                 $join->on("quiz.id", "=", "favorite.quizId")
                     ->where("favorite.userId", "=", $userId);
             })
+            ->where("difficulty", $difficulty)
             ->select("quiz.id", "question.image", "favorite.id as favorite")
             ->where("order", 1)
             ->get()
@@ -43,9 +44,9 @@ class QuizController extends Controller
     public function trend()
     {
         return view("quiz.template", [
-            "easy" => $this->getTrend(),
-            "medium" => $this->getTrend(),
-            "hard" => $this->getTrend(),
+            "easy" => $this->getTrend(0),
+            "medium" => $this->getTrend(1),
+            "hard" => $this->getTrend(2),
         ]);
     }
 

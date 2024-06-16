@@ -5,5 +5,6 @@
     <div class="main__nickname">
         Pseudo: {{ $nickname }}
     </div>
+    <input type="hidden" value="{{ csrf_token() }}" class="crsfToken" name="_token">
     <script src="{{ asset('assets/js/quiz/home.js') }}"></script>
 </x-base>

@@ -9,10 +9,18 @@ use App\Models\GameUser;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Queue;
-use App\Jobs\DeleteGame;
+use App\Jobs\GameManager;
+use App\Http\Controllers\GameUserController;
+use App\Models\GameUserResponse;
 
 class GameController extends Controller
 {
+    private $GameUserController;
+
+    public function __construct()
+    {
+        $this->GameUserController = new GameUserController();
+    }
     public function generate_code($length)
     {
         $characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -63,7 +71,22 @@ class GameController extends Controller
     {
         if (Game::where("code", $code)->get()->isEmpty()) return redirect("/");
         if (Auth::check()) {
-            if (Game::where("code", $code)->get()->first()->hostId === Auth::user()->id)
+            if (Game::where("code", $code)->first()->status === 5) {
+                $getUser = $this->GameUserController->myStatus();
+                $getAllResponse = GameUserResponse::where("gameUserId", $getUser["userId"])
+                    ->join("response", "response.id", "=", "game_user_response.responseId")
+                    ->select("game_user_response.*", "response.*")
+                    ->get();
+                $score = 0;
+                $getAllResponse->map(function ($x) use (&$score) {
+                    if ($x->badAnswer === 0) {
+                        $score += 20;
+                    }
+                });
+                return view("quiz.end", ["score" => $score]);
+            }
+            if (Game::where("code", $code)->first()->launch === 1) return view("quiz.game");
+            if (Game::where("code", $code)->first()->hostId === Auth::user()->id)
                 return view(
                     "quiz/host",
                     [
@@ -76,9 +99,10 @@ class GameController extends Controller
             else return view("quiz/home", ["nickname" => Auth::user()->nickname]);
         } else if (session('gameUserId')) {
             $getGameUserById = GameUser::find(session('gameUserId'));
-            if (Game::find($getGameUserById->gameId)->code === $code)
+            if (Game::find($getGameUserById->gameId)->code === $code) {
+                if (Game::where("code", $code)->first()->launch === 1) return view("quiz.game");
                 return view("quiz/home", ["nickname" => $getGameUserById->nickname]);
-            else return redirect("/");
+            } else return redirect("/");
         } else return redirect("/");
     }
 
@@ -112,10 +136,6 @@ class GameController extends Controller
                     'status' => 'access-denied',
                 ], 404);
 
-            $findHost->status = 10;
-            $findHost->save();
-            sleep(5);
-
             $findHost->delete();
 
             return response()->json([
@@ -131,21 +151,23 @@ class GameController extends Controller
 
     public function status()
     {
-        if (!Auth::check() && !session("gameUserId")) return response()->json([
+        $userStatus = $this->GameUserController->myStatus();
+        if (!$this->GameUserController->myStatus()) return response()->json([
             "message" => "Access denied",
             "status" => "access-denied"
         ]);
 
-        $gameId = Auth::check() ?
-            GameUser::where("userId", Auth::user()->id)->first()->gameId :
-            GameUser::where("id", session("gameUserId"))->first()->gameId;
+        if (Game::find($userStatus["gameId"])->status === 5) return response()->json([
+            "message" => "Status game",
+            "end" => true,
+        ]);
 
-        $getGame = Game::find($gameId)
+        $getGame = Game::find($userStatus["gameId"])
             ->join("question", function ($join) {
                 $join->on("question.quizId", "=", "game.quizId")
                     ->on("question.order", "=", "game.status");
             })->join("response", "response.questionId", "=", "question.id")
-            ->select("game.launch", "game.status", "question.label", "question.image", "response.value")
+            ->select("game.launch", "game.status", "question.label", "question.image", "response.value", "response.id")
             ->get();
 
         if ($getGame->first()->launch === 0) return response()->json([
@@ -153,13 +175,29 @@ class GameController extends Controller
             "launch" => false,
         ]);
 
-        return response()->json([
+        if ($getGame->first()->launch !== $userStatus["launch"]) {
+            $this->GameUserController->launch();
+            return response()->json([
+                "message" => "Status game",
+                "launch" => true
+            ]);
+        } else if ($getGame->first()->status !== $userStatus["status"]) {
+            $this->GameUserController->updateStatus();
+            return response()->json([
+                "message" => "Status game",
+                "next" => true,
+                "question" => $getGame->first()->label,
+                "image" => $getGame->first()->image,
+                "responses" => $getGame->map(function ($x) {
+                    return ["response_value" => $x->value, "response_id" => $x->id];
+                })
+            ]);
+        } else return response()->json([
             "message" => "Status game",
-            "status" => $getGame->first()->status,
             "question" => $getGame->first()->label,
             "image" => $getGame->first()->image,
-            "response" => $getGame->map(function ($x) {
-                return $x->value;
+            "responses" => $getGame->map(function ($x) {
+                return ["response_value" => $x->value, "response_id" => $x->id];
             })
         ]);
     }
@@ -173,7 +211,8 @@ class GameController extends Controller
         $code = $getGame->code;
         if (session("gameUserId")) {
             $getUser = GameUser::find(session("gameUserId"));
-            if ($getUser->gameId === $getGame->id)
+            if (!$getUser) session()->forget("gameUserId");
+            if ($getUser && $getUser->gameId === $getGame->id)
                 return redirect("/quiz/game/$quizId/$code");
             else
                 return redirect("/");
@@ -193,17 +232,49 @@ class GameController extends Controller
     {
         if (!Auth::check() && !session("gameUserId")) return redirect("/");
 
-        $gameId = Auth::check() ?
-            GameUser::where("userId", Auth::user()->id)->first()->gameId :
-            GameUser::where("id", session("gameUserId"))->first()->gameId;
+        $getGameUser = Auth::check() ?
+            GameUser::where("userId", Auth::user()->id)->first() :
+            GameUser::where("id", session("gameUserId"))->first();
 
-        $getGame = Game::find($gameId)->first();
+        if ($getGameUser === null) return redirect("/");
 
-        if(Auth::check() && Auth::user()->id === $getGame->hostId) return $this->destroy();
-        else {
+        $getGame = Game::find($getGameUser->gameId)->first();
+
+        if (Auth::check() && Auth::user()->id === $getGame->hostId) {
+            $this->destroy();
+            return redirect("/");
+        } else {
             GameUser::find(session("gameUserId"))->delete();
             session()->forget("gameUserId");
             return redirect("/");
         }
+    }
+
+    function launch()
+    {
+        if (Auth::check()) {
+            $findHost = Game::where("hostId", Auth::user()->id)->first();
+            if (!$findHost) return response()->json([
+                'message' => 'Access denied',
+                'status' => 'access-denied',
+            ], 404);
+
+            if ($findHost->launch) return response()->json([
+                'message' => 'Already launched',
+                'status' => 'already-launched',
+            ], 404);
+
+            GameManager::dispatch($findHost->id);
+            $findHost->launch = true;
+            $findHost->save();
+            $this->status();
+            return response()->json([
+                'message' => 'Game launched',
+                'status' => 'game-launched',
+            ], 200);
+        } else return response()->json([
+            "message" => "Access denied",
+            "status" => "access-denied"
+        ]);
     }
 }

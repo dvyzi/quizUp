@@ -18,7 +18,30 @@ setInterval(() => {
     point()
 }, 2500)
 
-window.addEventListener('beforeunload', function (event) {
-    event.preventDefault();
-    return 'Êtes-vous sûr de vouloir quitter cette page ?';
-});
+setInterval(() => {
+    $.ajax({
+        type: "POST",
+        url: "/quiz/game/status",
+        data: {
+            _token: document.querySelector(".crsfToken").value
+        },
+        success: function (response) {
+            if(response?.launch) return location.reload()
+        },
+        error: function (err) {
+            leaveGame()
+            return location.reload()
+        }
+    });
+}, 1000)
+
+function leaveGame() {
+    $.ajax({
+        type: "GET",
+        url: "/quiz/game/leave",
+        data: document.querySelector(".crsfToken").value,
+        error: function (err) {
+            console.log(err);
+        }
+    });
+}

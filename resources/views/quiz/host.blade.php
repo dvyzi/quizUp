@@ -1,7 +1,7 @@
 <x-base css="quiz/host.css">
     <div class="main__code">
         <h1>{{ $code }}</h1>
-        <i class="fa-solid fa-copy"></i>
+        <i id="paste" class="fa-solid fa-copy"></i>
     </div>
 
     <div class="main__game">
@@ -15,13 +15,6 @@
             </div>
         </div>
     </div>
+    <input type="hidden" name="_token" value="{{ csrf_token() }}" class="csrfToken">
     <script src="{{ asset('assets/js/quiz/host.js') }}"></script>
-
-    @if ($host)
-        <input type="hidden" name="_token" value="{{ csrf_token() }}" class="getAllUsers">
-        <script src="{{ asset('assets/js/quiz/getAllUsers.js') }}"></script>
-
-        <input type="hidden" name="_token" value="{{ csrf_token() }}" class="deleteGame">
-        <script src="{{ asset('assets/js/quiz/deleteQuiz.js') }}"></script>
-    @endif
 </x-base>

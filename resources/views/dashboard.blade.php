@@ -28,8 +28,7 @@
                             <a href="/quiz/game/{{ $favorite->id }}" class="play">Jouer</a>
                             <form onsubmit="return false" class="form{{ $favorite->id }}">
                                 @csrf
-                                <button id="{{ $favorite->id }}_remove"
-                                    class="favorite"><i
+                                <button id="{{ $favorite->id }}_remove" class="favorite"><i
                                         class="fa-solid fa-heart"></i></button>
                             </form>
                         </div>
@@ -39,21 +38,23 @@
             </div>
         @endif
     </section>
-    <script src="{{asset("assets/js/dashboard.js")}}"></script>
+    <script src="{{ asset('assets/js/dashboard.js') }}"></script>
     <section class="main__manageHistoryGame">
         <h2 class="main__manageHistoryGame__h2">Récemment joué</h2>
-        <p class="main__manageHistoryGame__any">Aucun historique</p>
-        {{-- <div class="main__manageHistoryGame__manager">
-            <div class="main__manageHistoryGame__manager__container">
-                <div class="main__manageHistoryGame__manager__container__button">
-                    <a href="/quiz/game/" class="play">Jouer</a>
-                    <form onsubmit="return false" class="form">
-                        @csrf
-                        <button id="" class="favorite"><i class="fa-solid fa-heart"></i></button>
-                    </form>
-                </div>
-                <img src="https://images.pexels.com/photos/4498610/pexels-photo-4498610.jpeg" alt="">
+        @if ($historys->isEmpty())
+            <p class="main__manageHistoryGame__any">Aucun historique</p>
+        @else
+            <div class="main__manageHistoryGame__manager">
+                @foreach ($historys as $history)
+                    <div class="main__manageHistoryGame__manager__container div{{ $history->id }}">
+                        <div class="main__manageHistoryGame__manager__container__button">
+                            <button id="{{ $history->id }}" class="play">Jouer</button>
+                        </div>
+                        <img src="{{ $history->image }}" alt="">
+                    </div>
+                @endforeach
             </div>
-        </div> --}}
+        @endif
     </section>
+    <input type="hidden" value="{{ csrf_token() }}" class="csrfToken" name="_token">
 </x-base>

@@ -61,7 +61,7 @@ main {
 
 .main__difficult__manager__container__button form {
     width: 100%;
-} 
+}
 
 .main__difficult__manager__container__button .favorite {
     background-color: var(--violet);
@@ -81,4 +81,16 @@ main {
     height: auto;
     border-radius: 10px;
     transition: filter .1s linear;
+}
+
+@media screen and (max-width: 1400px) {
+    main {
+        padding: 0px 100px;
+    }
+}
+
+@media screen and (max-width: 700px) {
+    main {
+        padding: 0px 30px;
+    }
 }
