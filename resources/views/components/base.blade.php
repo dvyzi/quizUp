@@ -63,7 +63,7 @@
                 @endif
             @else
                 <div class="header__nav__connect">
-                    <a class="header__nav__connect__icon" href="/login"><i
+                    <a class="header__nav__connect__icon" href="/quiz/game/leave"><i
                             class="fa-solid fa-arrow-right-from-bracket"></i></a>
                 </div>
             @endif
@@ -96,7 +96,7 @@
                 @endif
             @else
                 <div class="header__menu__gateway__connexion">
-                    <a href="/dashboard">Quitter la partie</a>
+                    <a href="/quiz/game/leave">Quitter la partie</a>
                 </div>
             @endif
         </menu>

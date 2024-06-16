@@ -12,15 +12,20 @@ Route::get('/', function () {
     return view('homepage');
 });
 
+Route::get('/test', [GameController::class, "status"]);
+
 Route::get('/quiz/divertissement', [QuizController::class, "divertissement"]);
 Route::get('/quiz/apprentissage', [QuizController::class, "apprentissage"]);
 Route::get('/quiz/trend', [QuizController::class, "trend"]);
 
 
 Route::post('/quiz/game/join', [GameController::class, "join"])->name("join.game");
-Route::post('/quiz/game', [GameController::class, "store"]);
+Route::post('/quiz/game/create', [GameController::class, "store"]);
 Route::get('/quiz/game/{quizId}/{code}', [GameController::class, "game"]);
 Route::post('/quiz/game/users', [GameController::class, "getAllUsers"]);
+Route::post('/quiz/game/get/user', [GameController::class, "getAllUsers"]);
+Route::post('/quiz/game/destroy', [GameController::class, "destroy"]);
+Route::get('/quiz/game/leave', [GameController::class, "leave"]);
 
 
 Route::post('/favorite/add', [FavoriteController::class, "store"]);

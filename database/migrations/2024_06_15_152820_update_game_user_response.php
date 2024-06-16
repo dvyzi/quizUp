@@ -11,8 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('game', function (Blueprint $table) {
-            $table->integer("hostId");
+        Schema::table("game_user_response", function (Blueprint $table) {
+            $table->foreign('gameUserId')
+                ->references('id')->on('game_user')
+                ->onDelete('cascade');
         });
     }
 

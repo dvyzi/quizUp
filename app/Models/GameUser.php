@@ -11,9 +11,15 @@ class GameUser extends Model
 
     protected $table = "game_user";
 
+    public function game()
+    {
+        return $this->belongsTo(Game::class);
+    }
+
     protected $fillable = [
         "gameId",
         "status",
-        "nickname"
+        "nickname",
+        "userId"
     ];
 }

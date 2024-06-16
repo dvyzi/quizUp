@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('game', function (Blueprint $table) {
-            $table->integer("hostId");
+        Schema::table("game_user", function (Blueprint $table) {
+            $table->integer("userId")->nullable(true);
         });
     }
 

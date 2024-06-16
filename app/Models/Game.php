@@ -15,6 +15,17 @@ class Game extends Model
         "code",
         "quizId",
         "status",
-        "hostId"
+        "hostId",
+        "launch"
     ];
+
+    public function question()
+    {
+        return $this->hasMany(Question::class);
+    }
+
+    public function response()
+    {
+        return $this->hasMany(Response::class);
+    }
 }

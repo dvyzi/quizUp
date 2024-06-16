@@ -17,3 +17,8 @@ function point() {
 setInterval(() => {
     point()
 }, 2500)
+
+window.addEventListener('beforeunload', function (event) {
+    event.preventDefault();
+    return 'Êtes-vous sûr de vouloir quitter cette page ?';
+});

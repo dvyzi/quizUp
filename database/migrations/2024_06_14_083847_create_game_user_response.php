@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('game_user_response', function (Blueprint $table) {
             $table->id();
             $table->integer("responseId");
-            $table->integer("gameUserId");
+            $table->bigInteger("gameUserId")->unsigned();
             $table->integer("questionId");
             $table->timestamps();
         });

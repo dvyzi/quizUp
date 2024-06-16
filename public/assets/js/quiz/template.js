@@ -81,7 +81,7 @@ document.querySelectorAll(".play").forEach((container) => {
         console.log(container.id);
         $.ajax({
             type: "POST",
-            url: "/quiz/game",
+            url: "/quiz/game/create",
             data: {
                 _token: document.querySelector(`.form${container.id} input[name=_token]`).value,
                 quizId: container.id

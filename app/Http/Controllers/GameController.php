@@ -8,6 +8,8 @@ use App\Models\Quiz;
 use App\Models\GameUser;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Queue;
+use App\Jobs\DeleteGame;
 
 class GameController extends Controller
 {
@@ -26,18 +28,20 @@ class GameController extends Controller
     public function store(Request $request)
     {
         $quizId = $request->quizId;
-        if (!Auth::check()) return response()->json([
-            'message' => 'User not connected',
-            'status' => 'user-not-connected',
-            "url" => "/login",
-        ], 404);
-        if (Quiz::where("id", $quizId)->get()->isEmpty()) return response()->json([
-            'message' => 'Quiz not find',
-            'status' => 'quiz-not-find'
-        ], 404);
+        if (!Auth::check())
+            return response()->json([
+                'message' => 'User not connected',
+                'status' => 'user-not-connected',
+                "url" => "/login",
+            ], 404);
+        if (Quiz::where("id", $quizId)->get()->isEmpty())
+            return response()->json([
+                'message' => 'Quiz not find',
+                'status' => 'quiz-not-find'
+            ], 404);
         $code = $this->generate_code(8);
         $game = Game::create([
-            "code" =>  $code,
+            "code" => $code,
             "quizId" => $quizId,
             "hostId" => Auth::user()->id,
             "status" => 0
@@ -45,7 +49,8 @@ class GameController extends Controller
         GameUser::create([
             "gameId" => $game->id,
             "status" => 0,
-            "nickname" => Auth::user()->nickname
+            "nickname" => Auth::user()->nickname,
+            "userId" => Auth::user()->id
         ]);
         return response()->json([
             'message' => 'Quiz find',
@@ -58,31 +63,147 @@ class GameController extends Controller
     {
         if (Game::where("code", $code)->get()->isEmpty()) return redirect("/");
         if (Auth::check()) {
-            if (Game::where("code", $code)->get()->first()->hostId === Auth::user()->id) {
-                return view("quiz/host", ["code" => $code, "userId" => Auth::user()->id, "nickname" => Auth::user()->nickname]);
-            } else return view("quiz/home", ["nickname" => Auth::user()->nickname]);
-        } else {
-            if (Session::forget('gameUserId')) {
-                $getGameUserById = GameUser::find(Session::forget('gameUserId'));
-                return view("quiz/home", ["nickname" => $getGameUserById->first()->nickname]);
-            } else redirect("/");
-        }
+            if (Game::where("code", $code)->get()->first()->hostId === Auth::user()->id)
+                return view(
+                    "quiz/host",
+                    [
+                        "code" => $code,
+                        "userId" => Auth::user()->id,
+                        "nickname" => Auth::user()->nickname,
+                        "host" => true
+                    ]
+                );
+            else return view("quiz/home", ["nickname" => Auth::user()->nickname]);
+        } else if (session('gameUserId')) {
+            $getGameUserById = GameUser::find(session('gameUserId'));
+            if (Game::find($getGameUserById->gameId)->code === $code)
+                return view("quiz/home", ["nickname" => $getGameUserById->nickname]);
+            else return redirect("/");
+        } else return redirect("/");
     }
 
     public function getAllUsers()
     {
+        if (Auth::check()) {
+            $findHost = Game::where("hostId", Auth::user()->id)->get();
+            if ($findHost->isEmpty())
+                return response()->json([
+                    'message' => 'Access denied',
+                    'status' => 'access-denied',
+                ], 404);
+            return response()->json([
+                "message" => "All user of game",
+                "data" => GameUser::where("gameId", $findHost->first()->id)->select("game_user.nickname")->get()
+            ], 200);
+        } else
+            return response()->json([
+                'message' => 'Access denied',
+                'status' => 'access-denied',
+            ], 404);
+    }
+
+    public function destroy()
+    {
+        if (Auth::check()) {
+            $findHost = Game::where("hostId", Auth::user()->id)->first();
+            if (!$findHost)
+                return response()->json([
+                    'message' => 'Access denied',
+                    'status' => 'access-denied',
+                ], 404);
+
+            $findHost->status = 10;
+            $findHost->save();
+            sleep(5);
+
+            $findHost->delete();
+
+            return response()->json([
+                "message" => "Game deleted",
+                "status" => "game-deleted",
+            ], 200);
+        } else
+            return response()->json([
+                'message' => 'Access denied',
+                'status' => 'access-denied',
+            ], 404);
+    }
+
+    public function status()
+    {
+        if (!Auth::check() && !session("gameUserId")) return response()->json([
+            "message" => "Access denied",
+            "status" => "access-denied"
+        ]);
+
+        $gameId = Auth::check() ?
+            GameUser::where("userId", Auth::user()->id)->first()->gameId :
+            GameUser::where("id", session("gameUserId"))->first()->gameId;
+
+        $getGame = Game::find($gameId)
+            ->join("question", function ($join) {
+                $join->on("question.quizId", "=", "game.quizId")
+                    ->on("question.order", "=", "game.status");
+            })->join("response", "response.questionId", "=", "question.id")
+            ->select("game.launch", "game.status", "question.label", "question.image", "response.value")
+            ->get();
+
+        if ($getGame->first()->launch === 0) return response()->json([
+            "message" => "Status game",
+            "launch" => false,
+        ]);
+
+        return response()->json([
+            "message" => "Status game",
+            "status" => $getGame->first()->status,
+            "question" => $getGame->first()->label,
+            "image" => $getGame->first()->image,
+            "response" => $getGame->map(function ($x) {
+                return $x->value;
+            })
+        ]);
     }
 
     public function join(Request $request)
     {
-        $getGame = Game::where("code", $request->code)->get();
-        if ($getGame->isEmpty()) return redirect("/");
-        $gameUser = GameUser::create([
-            "gameId" => $getGame->first()->id,
-            "status" => 0,
-            "nickname" => Auth::check() ? Auth::user()->nickname : "Anonyme" . $this->generate_code(4)
-        ]);
-        if (!Auth::check()) Session::put("gameUserId", $gameUser->first()->id);
-        return $this->game($getGame->first()->quizId, $getGame->first()->code);
+        $getGame = Game::where("code", $request->code)->first();
+        if (!$getGame)
+            return redirect("/");
+        $quizId = $getGame->quizId;
+        $code = $getGame->code;
+        if (session("gameUserId")) {
+            $getUser = GameUser::find(session("gameUserId"));
+            if ($getUser->gameId === $getGame->id)
+                return redirect("/quiz/game/$quizId/$code");
+            else
+                return redirect("/");
+        } else {
+            $gameUser = GameUser::create([
+                "gameId" => $getGame->first()->id,
+                "status" => 0,
+                "nickname" => Auth::check() ? Auth::user()->nickname : "Anonyme" . $this->generate_code(4),
+                "userId" => Auth::check() ? Auth::user()->id : null,
+            ]);
+            if (!Auth::check()) session()->put("gameUserId", $gameUser->id);
+            return redirect("/quiz/game/$quizId/$code");
+        }
+    }
+
+    public function leave()
+    {
+        if (!Auth::check() && !session("gameUserId")) return redirect("/");
+
+        $gameId = Auth::check() ?
+            GameUser::where("userId", Auth::user()->id)->first()->gameId :
+            GameUser::where("id", session("gameUserId"))->first()->gameId;
+
+        $getGame = Game::find($gameId)->first();
+
+        if(Auth::check() && Auth::user()->id === $getGame->hostId) return $this->destroy();
+        else {
+            GameUser::find(session("gameUserId"))->delete();
+            session()->forget("gameUserId");
+            return redirect("/");
+        }
     }
 }
